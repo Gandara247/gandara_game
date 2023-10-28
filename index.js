@@ -11,23 +11,44 @@ const scaledCanvas = {
 
 const floorCollisions2D = []
 for (let i = 0; i < floorCollisions.length; i += 36) {
-  floorCollisions2D.push(floorCollisions.slice(i, i + 36))
+    floorCollisions2D.push(floorCollisions.slice(i, i + 36))
 }
 
 const collisionBlocks = []
 floorCollisions2D.forEach((row, y) => {
-  row.forEach((symbol, x) => {
-    if (symbol === 202) {
-      collisionBlocks.push(
-        new CollisionBlock({
-          position: {
-            x: x * 16,
-            y: y * 16,
-          },
-        })
-      )
-    }
-  })
+    row.forEach((symbol, x) => {
+        if (symbol === 202) {
+            collisionBlocks.push(
+                new CollisionBlock({
+                    position: {
+                        x: x * 16,
+                        y: y * 16,
+                    },
+                })
+            )
+        }
+    })
+})
+
+const platformCollisions2D = []
+for (let i = 0; i < platformCollisions.length; i += 36) {
+    platformCollisions2D.push(platformCollisions.slice(i, i + 36))
+}
+
+const platformCollisionsBlocks = []
+platformCollisions2D.forEach((row, y) => {
+    row.forEach((symbol, x) => {
+        if (symbol === 202) {
+            platformCollisionsBlocks.push(
+                new CollisionBlock({
+                    position: {
+                        x: x * 16,
+                        y: y * 16,
+                    },
+                })
+            )
+        }
+    })
 })
 
 const gravity = 0.5;
@@ -68,9 +89,13 @@ function animate() {
     c.scale(4, 4)
     c.translate(0, -background.image.height + scaledCanvas.height)
     background.update()
-    collisionBlocks.forEach(collisionBlock => {
+    collisionBlocks.forEach((collisionBlock) => {
         collisionBlock.update()
     })
+    platformCollisionsBlocks.forEach((block) => {
+        block.update()
+    })
+    
     c.restore()
     player.update()
     player2.update()
