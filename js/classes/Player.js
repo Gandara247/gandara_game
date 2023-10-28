@@ -22,3 +22,4 @@ class Player {
         else this.velocity.y = 0
     };
 };
+

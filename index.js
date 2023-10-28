@@ -4,30 +4,30 @@ const c = canvas.getContext("2d");
 canvas.width = 1024;
 canvas.height = 576;
 
-const scaledCancas = {
+const scaledCanvas = {
     width: canvas.width / 4,
     height: canvas.height / 4,
 };
 
-const FloorCollisions2D = []
-
-for (let i = 0; i < FloorCollisions.length; i += 36) {
-    FloorCollisions2D.push(FloorCollisions.slice(i, i + 36))
-};
+const floorCollisions2D = []
+for (let i = 0; i < floorCollisions.length; i += 36) {
+  floorCollisions2D.push(floorCollisions.slice(i, i + 36))
+}
 
 const collisionBlocks = []
-FloorCollisions2D.forEach((row) => {
-    row.forEach((symbol) => {
-        if (symbol === 202) {
-            console.log("draw a block here!!!");
-            collisionBlocks.push(new CollisionBlock({
-                position: {
-                    x: 0,
-                    y: 0,
-                }
-            }))
-        }
-    })
+floorCollisions2D.forEach((row, y) => {
+  row.forEach((symbol, x) => {
+    if (symbol === 202) {
+      collisionBlocks.push(
+        new CollisionBlock({
+          position: {
+            x: x * 16,
+            y: y * 16,
+          },
+        })
+      )
+    }
+  })
 })
 
 const gravity = 0.5;
@@ -66,8 +66,11 @@ function animate() {
 
     c.save()
     c.scale(4, 4)
-    c.translate(0, -background.image.height + scaledCancas.height)
+    c.translate(0, -background.image.height + scaledCanvas.height)
     background.update()
+    collisionBlocks.forEach(collisionBlock => {
+        collisionBlock.update()
+    })
     c.restore()
     player.update()
     player2.update()
