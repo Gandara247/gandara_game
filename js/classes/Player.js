@@ -1,5 +1,6 @@
-class Player {
-    constructor({ position, collisionBlocks }) {
+class Player extends Sprite{
+    constructor({ position, collisionBlocks, imageSrc}) {
+        super({imageSrc})
         this.position = position
         this.velocity = {
             x: 0,
