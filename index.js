@@ -65,10 +65,42 @@ const player = new Player({
         Idle: {
             imageSrc: "./img/character/Idle.png",
             frameRate: 8,
+            frameBuffer: 10
         },
         Run: {
             imageSrc: "./img/character/Run.png",
             frameRate: 8,
+            frameBuffer: 5
+        },
+        Jump: {
+            imageSrc: "./img/character/Jump.png",
+            frameRate: 2,
+            frameBuffer: 3
+        },
+        Fall: {
+            imageSrc: "./img/character/Fall.png",
+            frameRate: 2,
+            frameBuffer: 3
+        },
+        FallLeft: {
+            imageSrc: "./img/character/FallLeft.png",
+            frameRate: 2,
+            frameBuffer: 3
+        },
+        RunLeft: {
+            imageSrc: "./img/character/RunLeft.png",
+            frameRate: 8,
+            frameBuffer: 5
+        },
+        IdleLeft: {
+            imageSrc: "./img/character/IdleLeft.png",
+            frameRate: 8,
+            frameBuffer: 10
+        },
+        JumpLeft: {
+            imageSrc: "./img/character/JumpLeft.png",
+            frameRate: 2,
+            frameBuffer: 3
         },
     }
 })
@@ -108,13 +140,29 @@ function animate() {
     })
 
     player.update()
+
     player.velocity.x = 0
     if (keys.d.pressed) {
         player.switchSprite("Run")
-        player.velocity.x = 5
-    }else if (keys.a.pressed) player.velocity.x = -5
-    else if (player.velocity.y === 0){
-        player.switchSprite("Idle")
+        player.velocity.x = 2
+        player.lastDirection = "right"
+    } else if (keys.a.pressed) {
+        player.switchSprite("RunLeft")
+        player.velocity.x = -2
+        player.lastDirection = "left"
+    }
+    else if (player.velocity.y === 0) {
+
+        if (player.lastDirection === "right") player.switchSprite("Idle")
+        else player.switchSprite("IdleLeft")
+    }
+
+    if (player.velocity.y < 0) {
+        if (player.lastDirection === "right") player.switchSprite("Jump")
+        else player.switchSprite("JumpLeft")
+    } else if (player.velocity.y > 0) {
+        if (player.lastDirection === "right") player.switchSprite("Fall")
+        else player.switchSprite("FallLeft")
     }
 
     c.restore()
