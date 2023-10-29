@@ -35,23 +35,24 @@ for (let i = 0; i < platformCollisions.length; i += 36) {
     platformCollisions2D.push(platformCollisions.slice(i, i + 36))
 }
 
-const platformCollisionsBlocks = []
+const platformCollisionBlocks = []
 platformCollisions2D.forEach((row, y) => {
     row.forEach((symbol, x) => {
         if (symbol === 202) {
-            platformCollisionsBlocks.push(
+            platformCollisionBlocks.push(
                 new CollisionBlock({
                     position: {
                         x: x * 16,
                         y: y * 16,
                     },
+                    height:4
                 })
             )
         }
     })
 })
 
-const gravity = 0.5;
+const gravity = 0.1;
 
 const player = new Player({
     position: {
@@ -59,6 +60,7 @@ const player = new Player({
         y: 300,
     },
     collisionBlocks,
+    platformCollisionBlocks,
     imageSrc: "./img/character/Idle.png",
     frameRate: 8,
     animations: {
@@ -135,7 +137,7 @@ function animate() {
     collisionBlocks.forEach((collisionBlock) => {
         collisionBlock.update()
     })
-    platformCollisionsBlocks.forEach((block) => {
+    platformCollisionBlocks.forEach((block) => {
         block.update()
     })
 
@@ -181,7 +183,7 @@ window.addEventListener("keydown", (event) => {
             keys.a.pressed = true
             break
         case "w":
-            player.velocity.y = -8
+            player.velocity.y = -4
             break
         case "s":
             player.velocity.y = 1

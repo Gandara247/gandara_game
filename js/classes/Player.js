@@ -1,5 +1,13 @@
 class Player extends Sprite {
-    constructor({ position, collisionBlocks, imageSrc, frameRate, scale = 0.43, animations }) {
+    constructor({ 
+        position,
+        collisionBlocks,
+        platformCollisionBlocks,
+        imageSrc,
+        frameRate,
+        scale = 0.43,
+        animations
+    }) {
         super({ imageSrc, frameRate, scale })
         this.position = position
         this.velocity = {
@@ -7,6 +15,7 @@ class Player extends Sprite {
             y: 1,
         }
         this.collisionBlocks = collisionBlocks
+        this.platformCollisionBlocks = platformCollisionBlocks
         this.hitBox = {
             position: {
                 x: this.position.x,
@@ -26,7 +35,9 @@ class Player extends Sprite {
     };
 
     switchSprite(key) {
-        if (this.image === this.animations[key] || !this.loaded) return
+        if (this.image === this.animations[key].image || !this.loaded) return
+
+        this.curretFrame = 0
         this.image = this.animations[key].image
         this.frameBuffer = this.animations[key].frameBuffer
         this.frameRate = this.animations[key].frameRate
@@ -118,6 +129,26 @@ class Player extends Sprite {
                     this.position.y = collisionBlock.position.y + collisionBlock.height - offset + 0.01
                     break
                 }
+
+            }
+        }
+
+        for (let i = 0; i < this.platformCollisionBlocks.length; i++) {
+            const platformCollisionBlock = this.platformCollisionBlocks[i]
+
+            if (
+                platformCollision({
+                    object1: this.hitBox,
+                    object2: platformCollisionBlock,
+                })
+            ) {
+                if (this.velocity.y > 0) {
+                    this.velocity.y = 0
+
+                    const offset = this.hitBox.position.y - this.position.y + this.hitBox.height
+                    this.position.y = platformCollisionBlock.position.y - offset - 0.01
+                    break
+                }                
 
             }
         }
