@@ -1,5 +1,5 @@
 class Player extends Sprite {
-    constructor({ 
+    constructor({
         position,
         collisionBlocks,
         platformCollisionBlocks,
@@ -25,12 +25,20 @@ class Player extends Sprite {
             height: 10
         }
         this.animations = animations
-        this.lastDirection = "right" 
+        this.lastDirection = "right"
         for (let key in this.animations) {
             const image = new Image()
             image.src = this.animations[key].imageSrc
 
             this.animations[key].image = image
+        }
+        this.camerabox = {
+            position: {
+                x: this.position.x,
+                y: this.position.y,
+            },
+            width: 200,
+            height: 80,
         }
     };
 
@@ -44,14 +52,60 @@ class Player extends Sprite {
 
     }
 
+    updateCamerabox() {
+        this.camerabox = {
+            position: {
+                x: this.position.x - 50,
+                y: this.position.y,
+            },
+            width: 200,
+            height: 80,
+        }
+    }
+
+    checkForHorizontalCanvasCollision() {
+        if (this.hitBox.position.x + this.hitBox.width + this.velocity.x >= 576 ||
+            this.hitBox.position.x + this.velocity.x <= 0
+            ) {
+            this.velocity.x = 0
+        }
+    }
+
+    shouldPanCameraToTheLeft({ canvas, camera }) {
+        const cameraboxRightSide = this.camerabox.position.x + this.camerabox.width
+        const scaleDownCanvasWidth = canvas.width / 4
+
+        if (cameraboxRightSide >= 576) return
+        if (cameraboxRightSide >= scaleDownCanvasWidth + Math.abs(camera.position.x)) {
+            camera.position.x -= this.velocity.x
+        }
+    }
+
+    shouldPanCameraToTheRight({ canvas, camera }) {
+        if (this.camerabox.position.x <= 0) return
+        if (this.camerabox.position.x <= Math.abs(camera.position.x)) {
+            camera.position.x -= this.velocity.x
+        }
+    }
+
     update() {
         this.updateFrame()
         this.updateHitBox()
+
+        this.updateCamerabox()
+        c.fillStyle = "rgba(0,0,255,0.2)"
+        c.fillRect(
+            this.camerabox.position.x,
+            this.camerabox.position.y,
+            this.camerabox.width,
+            this.camerabox.height
+        )
+
+
         // c.fillStyle = "rgba(0, 255,0,0.2)"
         // c.fillRect(this.position.x, this.position.y, this.width, this.height)
 
-        // c.fillStyle = "rgba(255,0,0,0.2)"
-        // c.fillRect(this.hitBox.position.x, this.hitBox.position.y, this.hitBox.width, this.hitBox.height)
+
         this.draw()
 
         this.position.x += this.velocity.x
@@ -148,7 +202,7 @@ class Player extends Sprite {
                     const offset = this.hitBox.position.y - this.position.y + this.hitBox.height
                     this.position.y = platformCollisionBlock.position.y - offset - 0.01
                     break
-                }                
+                }
 
             }
         }
