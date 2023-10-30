@@ -45,7 +45,7 @@ class Player extends Sprite {
     switchSprite(key) {
         if (this.image === this.animations[key].image || !this.loaded) return
 
-        this.curretFrame = 0
+        this.currentFrame = 0
         this.image = this.animations[key].image
         this.frameBuffer = this.animations[key].frameBuffer
         this.frameRate = this.animations[key].frameRate
@@ -73,10 +73,10 @@ class Player extends Sprite {
 
     shouldPanCameraToTheLeft({ canvas, camera }) {
         const cameraboxRightSide = this.camerabox.position.x + this.camerabox.width
-        const scaleDownCanvasWidth = canvas.width / 4
+        const scaledDownCanvasWidth = canvas.width / 4
 
         if (cameraboxRightSide >= 576) return
-        if (cameraboxRightSide >= scaleDownCanvasWidth + Math.abs(camera.position.x)) {
+        if (cameraboxRightSide >= scaledDownCanvasWidth + Math.abs(camera.position.x)) {
             camera.position.x -= this.velocity.x
         }
     }
@@ -87,19 +87,35 @@ class Player extends Sprite {
             camera.position.x -= this.velocity.x
         }
     }
-
+    
+    shouldPanCameraDown({ canvas, camera }) {
+        if (this.camerabox.position.y + this.velocity.y  <= 0) return
+        if (this.camerabox.position.y <= Math.abs(camera.position.y)) {
+            camera.position.y -= this.velocity.y
+        }
+    }
+    
+    shouldPanCameraUp({ canvas, camera }) {
+        if (this.camerabox.position.y + this.camerabox.height + this.velocity.y  >= 432) return
+        const scaledCanvasHeight = canvas.height /4
+        if (this.camerabox.position.y + this.camerabox.height >= Math.abs(camera.position.y)
+        + scaledCanvasHeight) {
+            camera.position.y -= this.velocity.y
+        }
+    }
+    
     update() {
         this.updateFrame()
         this.updateHitBox()
 
         this.updateCamerabox()
-        c.fillStyle = "rgba(0,0,255,0.2)"
-        c.fillRect(
-            this.camerabox.position.x,
-            this.camerabox.position.y,
-            this.camerabox.width,
-            this.camerabox.height
-        )
+        // c.fillStyle = "rgba(0,0,255,0.2)"
+        // c.fillRect(
+        //     this.camerabox.position.x,
+        //     this.camerabox.position.y,
+        //     this.camerabox.width,
+        //     this.camerabox.height
+        // )
 
 
         // c.fillStyle = "rgba(0, 255,0,0.2)"
