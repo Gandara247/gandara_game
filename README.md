@@ -3,6 +3,8 @@ This is a project for a simple 2D game with the aim of exploring the different p
 
 The game is a 2D platformer where the main character can move left and right, jump and interact with the environment. It also handles camera movement as the player moves through the game world.
 
+link: https://game.gandaradev.com/
+
     Canvas Setup: In index.js, you set up the game canvas and its dimensions, as well as a scaled version of the canvas.
 
     Collision Blocks: You create collision blocks for the floor and platforms by iterating through arrays like floorCollisions and platformCollisions and instantiating CollisionBlock objects for appropriate positions.
